@@ -50,13 +50,13 @@ app.get('/', async (req, res) => {
             'tr' AS ESKITR,
             'en' AS ESKIEN,
             '2' AS ESKITR2
-        FROM [ACCELL2022].[dbo].[TBLSTSABIT] A WITH (NOLOCK)
-        LEFT JOIN [ACCELL2022].[dbo].[TBLSTSABITEK] A2 WITH (NOLOCK) ON A.[STOK_KODU] = A2.[STOK_KODU]
-        LEFT JOIN [ACCELL2022].[dbo].[TBLSTOKKOD1] B1 WITH (NOLOCK) ON A.[KOD_1] = B1.[GRUP_KOD]
-        LEFT JOIN [ACCELL2022].[dbo].[TBLSTOKKOD2] B2 WITH (NOLOCK) ON A.[KOD_2] = B2.[GRUP_KOD]
-        LEFT JOIN [ACCELL2022].[dbo].[TBLSTOKKOD3] B3 WITH (NOLOCK) ON A.[KOD_3] = B3.[GRUP_KOD]
-        LEFT JOIN [ACCELL2022].[dbo].[TBLSTOKKOD4] B4 WITH (NOLOCK) ON A.[KOD_4] = B4.[GRUP_KOD]
-        LEFT JOIN [ACCELL2022].[dbo].[TBLSTOKKOD5] B5 WITH (NOLOCK) ON A.[KOD_5] = B5.[GRUP_KOD]
+        FROM [TBLSTSABIT] A WITH (NOLOCK)
+        LEFT JOIN [TBLSTSABITEK] A2 WITH (NOLOCK) ON A.[STOK_KODU] = A2.[STOK_KODU]
+        LEFT JOIN [TBLSTOKKOD1] B1 WITH (NOLOCK) ON A.[KOD_1] = B1.[GRUP_KOD]
+        LEFT JOIN [TBLSTOKKOD2] B2 WITH (NOLOCK) ON A.[KOD_2] = B2.[GRUP_KOD]
+        LEFT JOIN [TBLSTOKKOD3] B3 WITH (NOLOCK) ON A.[KOD_3] = B3.[GRUP_KOD]
+        LEFT JOIN [TBLSTOKKOD4] B4 WITH (NOLOCK) ON A.[KOD_4] = B4.[GRUP_KOD]
+        LEFT JOIN [TBLSTOKKOD5] B5 WITH (NOLOCK) ON A.[KOD_5] = B5.[GRUP_KOD]
         WHERE A.[STOK_KODU] = @productCode
         `;
         
@@ -98,7 +98,7 @@ app.get('/BOM', async (req, res) => {
               A.[HAM_KODU],
               A.[MIKTAR],
               A.[STOK_MALIYET]
-          FROM [ACCELL2022].[dbo].[TBLSTOKURM] A WITH (NOLOCK)
+          FROM [TBLSTOKURM] A WITH (NOLOCK)
           WHERE A.[MAMUL_KODU] = @productCode AND A.[GEC_FLAG] = 0
           UNION ALL
           SELECT 
@@ -108,7 +108,7 @@ app.get('/BOM', async (req, res) => {
               B.[HAM_KODU],
               B.[MIKTAR],
               B.[STOK_MALIYET]
-          FROM [ACCELL2022].[dbo].[TBLSTOKURM] B WITH (NOLOCK)
+          FROM [TBLSTOKURM] B WITH (NOLOCK)
           JOIN Liste AS C ON C.[HAM_KODU] = B.[MAMUL_KODU]
           WHERE B.[GEC_FLAG] = 0
         )
@@ -133,19 +133,19 @@ app.get('/BOM', async (req, res) => {
         FROM Liste Y
         OUTER APPLY (
           SELECT TOP 1 [FIYAT1], [FIYATDOVIZTIPI], [OLCUBR] 
-          FROM [ACCELL2022].[dbo].[TBLSTOKFIAT] WITH (NOLOCK) 
+          FROM [TBLSTOKFIAT] WITH (NOLOCK) 
           WHERE Y.HAM_KODU = [STOKKODU] 
           ORDER BY [BASTAR] DESC
         ) Z
         OUTER APPLY (
           SELECT TOP 1 [MIKTAR] 
-          FROM [ACCELL2022].[dbo].[TBLSTOKURM] WITH (NOLOCK) 
+          FROM [TBLSTOKURM] WITH (NOLOCK) 
           WHERE Y.[HAM_KODU] = [MAMUL_KODU]
         ) H
-        LEFT JOIN [ACCELL2022].[dbo].[TBLSTSABIT] E WITH (NOLOCK) ON Y.[HAM_KODU] = E.[STOK_KODU]
-        LEFT JOIN [ACCELL2022].[dbo].[TBLOPERATIONS_KATALOG] J WITH (NOLOCK) ON Y.[HAM_KODU] = J.[OPKODU]
-        LEFT JOIN [ACCELL2022].[dbo].[TBLSTOKKOD2] K WITH (NOLOCK) ON E.[KOD_2] = K.[GRUP_KOD]
-        LEFT JOIN [ACCELL2022].[dbo].[TBLSTOKKOD1] G WITH (NOLOCK) ON E.[KOD_1] = G.[GRUP_KOD]
+        LEFT JOIN [TBLSTSABIT] E WITH (NOLOCK) ON Y.[HAM_KODU] = E.[STOK_KODU]
+        LEFT JOIN [TBLOPERATIONS_KATALOG] J WITH (NOLOCK) ON Y.[HAM_KODU] = J.[OPKODU]
+        LEFT JOIN [TBLSTOKKOD2] K WITH (NOLOCK) ON E.[KOD_2] = K.[GRUP_KOD]
+        LEFT JOIN [TBLSTOKKOD1] G WITH (NOLOCK) ON E.[KOD_1] = G.[GRUP_KOD]
         ORDER BY SortOrder
         `;
         
@@ -193,7 +193,7 @@ app.get('/search', async (req, res) => {
       .input('query', sql.NVarChar, `%${query}%`)
       .query(`
         SELECT COUNT(*) AS total
-        FROM [ACCELL2022].[dbo].[TBLSTSABIT] A WITH (NOLOCK)
+        FROM [TBLSTSABIT] A WITH (NOLOCK)
         WHERE A.[STOK_KODU] LIKE @query
         OR A.[STOK_ADI] LIKE @query
       `);
@@ -212,9 +212,9 @@ app.get('/search', async (req, res) => {
           A.[STOK_ADI],
           B1.[GRUP_ISIM] AS KOD1,
           B2.[GRUP_ISIM] AS KOD2
-        FROM [ACCELL2022].[dbo].[TBLSTSABIT] A WITH (NOLOCK)
-        LEFT JOIN [ACCELL2022].[dbo].[TBLSTOKKOD1] B1 WITH (NOLOCK) ON A.[KOD_1] = B1.[GRUP_KOD]
-        LEFT JOIN [ACCELL2022].[dbo].[TBLSTOKKOD2] B2 WITH (NOLOCK) ON A.[KOD_2] = B2.[GRUP_KOD]
+        FROM [TBLSTSABIT] A WITH (NOLOCK)
+        LEFT JOIN [TBLSTOKKOD1] B1 WITH (NOLOCK) ON A.[KOD_1] = B1.[GRUP_KOD]
+        LEFT JOIN [TBLSTOKKOD2] B2 WITH (NOLOCK) ON A.[KOD_2] = B2.[GRUP_KOD]
         WHERE A.[STOK_KODU] LIKE @query
         OR A.[STOK_ADI] LIKE @query
         ORDER BY A.[STOK_KODU]
@@ -262,7 +262,7 @@ app.get('/BOM/export', async (req, res) => {
               A.[HAM_KODU],
               A.[MIKTAR],
               A.[STOK_MALIYET]
-          FROM [ACCELL2022].[dbo].[TBLSTOKURM] A WITH (NOLOCK)
+          FROM [TBLSTOKURM] A WITH (NOLOCK)
           WHERE A.[MAMUL_KODU] = @productCode AND A.[GEC_FLAG] = 0
           UNION ALL
           SELECT 
@@ -272,7 +272,7 @@ app.get('/BOM/export', async (req, res) => {
               B.[HAM_KODU],
               B.[MIKTAR],
               B.[STOK_MALIYET]
-          FROM [ACCELL2022].[dbo].[TBLSTOKURM] B WITH (NOLOCK)
+          FROM [TBLSTOKURM] B WITH (NOLOCK)
           JOIN Liste AS C ON C.[HAM_KODU] = B.[MAMUL_KODU]
           WHERE B.[GEC_FLAG] = 0
         )
@@ -297,19 +297,19 @@ app.get('/BOM/export', async (req, res) => {
         FROM Liste Y
         OUTER APPLY (
           SELECT TOP 1 [FIYAT1], [FIYATDOVIZTIPI], [OLCUBR] 
-          FROM [ACCELL2022].[dbo].[TBLSTOKFIAT] WITH (NOLOCK) 
+          FROM [TBLSTOKFIAT] WITH (NOLOCK) 
           WHERE Y.HAM_KODU = [STOKKODU] 
           ORDER BY [BASTAR] DESC
         ) Z
         OUTER APPLY (
           SELECT TOP 1 [MIKTAR] 
-          FROM [ACCELL2022].[dbo].[TBLSTOKURM] WITH (NOLOCK) 
+          FROM [TBLSTOKURM] WITH (NOLOCK) 
           WHERE Y.[HAM_KODU] = [MAMUL_KODU]
         ) H
-        LEFT JOIN [ACCELL2022].[dbo].[TBLSTSABIT] E WITH (NOLOCK) ON Y.[HAM_KODU] = E.[STOK_KODU]
-        LEFT JOIN [ACCELL2022].[dbo].[TBLOPERATIONS_KATALOG] J WITH (NOLOCK) ON Y.[HAM_KODU] = J.[OPKODU]
-        LEFT JOIN [ACCELL2022].[dbo].[TBLSTOKKOD2] K WITH (NOLOCK) ON E.[KOD_2] = K.[GRUP_KOD]
-        LEFT JOIN [ACCELL2022].[dbo].[TBLSTOKKOD1] G WITH (NOLOCK) ON E.[KOD_1] = G.[GRUP_KOD]
+        LEFT JOIN [TBLSTSABIT] E WITH (NOLOCK) ON Y.[HAM_KODU] = E.[STOK_KODU]
+        LEFT JOIN [TBLOPERATIONS_KATALOG] J WITH (NOLOCK) ON Y.[HAM_KODU] = J.[OPKODU]
+        LEFT JOIN [TBLSTOKKOD2] K WITH (NOLOCK) ON E.[KOD_2] = K.[GRUP_KOD]
+        LEFT JOIN [TBLSTOKKOD1] G WITH (NOLOCK) ON E.[KOD_1] = G.[GRUP_KOD]
         ORDER BY SortOrder
         `;
         
