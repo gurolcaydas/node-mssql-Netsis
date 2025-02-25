@@ -1,0 +1,715 @@
+:root {
+    --primary-color: #4a6fa5;
+    --primary-dark: #3a5a80;
+    --secondary-color: #5cb85c;
+    --secondary-dark: #449d44;
+    --accent-color: #f0ad4e;
+    --text-color: #2c3e50;
+    --text-light: #7f8c8d;
+    --background-color: #ecf0f1;
+    --card-background: #ffffff;
+    --border-color: #dce1e4;
+    --error-color: #d9534f;
+}
+
+body { 
+    font-family: 'Roboto', 'Segoe UI', Arial, sans-serif; 
+    margin: 0; 
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.4;
+    font-size: 14px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 15px 10px;
+}
+
+h1 { 
+    color: var(--primary-color); 
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+    font-weight: 500;
+    font-size: 22px;
+}
+
+.search-form { 
+    margin-bottom: 15px; 
+    background-color: var(--card-background);
+    padding: 12px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
+input[type="text"] { 
+    padding: 6px 10px; 
+    width: 250px; 
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    font-size: 13px;
+    transition: border-color 0.3s;
+    font-family: inherit;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.2);
+}
+
+button { 
+    padding: 6px 12px; 
+    background-color: var(--primary-color); 
+    color: white; 
+    border: none; 
+    border-radius: 3px;
+    cursor: pointer; 
+    font-size: 13px;
+    transition: background-color 0.3s;
+    font-family: inherit;
+}
+
+button:hover { 
+    background-color: var(--primary-dark); 
+}
+
+.product-card { 
+    border: 1px solid var(--border-color); 
+    border-radius: 4px; 
+    padding: 15px; 
+    margin-bottom: 15px;
+    background-color: var(--card-background);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
+.product-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+}
+
+.product-title { 
+    font-size: 16px; 
+    font-weight: 500; 
+    color: var(--primary-color);
+}
+
+.product-code { 
+    color: var(--text-light); 
+    font-size: 13px;
+    background-color: rgba(74, 111, 165, 0.1);
+    padding: 3px 8px;
+    border-radius: 3px;
+}
+
+.product-details { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+    gap: 12px; 
+}
+
+.detail-group { 
+    margin-bottom: 12px; 
+}
+
+.detail-label { 
+    font-weight: 500; 
+    color: var(--primary-color); 
+    margin-bottom: 4px;
+    font-size: 12px;
+}
+
+.detail-value { 
+    padding: 6px 8px;
+    background-color: rgba(92, 184, 92, 0.1);
+    border-radius: 3px;
+    border-left: 2px solid var(--secondary-color);
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.error { 
+    color: var(--error-color); 
+    font-weight: 500;
+    padding: 8px 10px;
+    background-color: rgba(217, 83, 79, 0.1);
+    border-radius: 3px;
+    border-left: 3px solid var(--error-color);
+    margin-bottom: 15px;
+    font-size: 13px;
+}
+
+.message {
+    padding: 8px 10px;
+    background-color: rgba(74, 111, 165, 0.1);
+    border-radius: 3px;
+    border-left: 3px solid var(--primary-color);
+    margin-bottom: 15px;
+    font-size: 13px;
+}
+
+.actions { 
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+}
+
+.action-button {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: var(--secondary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 3px;
+    margin-right: 8px;
+    font-weight: 500;
+    transition: background-color 0.3s, transform 0.2s;
+    font-size: 13px;
+}
+
+.action-button:hover {
+    background-color: var(--secondary-dark);
+    transform: translateY(-1px);
+}
+
+.nav-links {
+    margin-bottom: 15px;
+}
+
+.nav-link {
+    display: inline-block;
+    margin-right: 12px;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.nav-link:hover {
+    text-decoration: underline;
+}
+
+/* Search page specific styles */
+.results-container {
+    background-color: var(--card-background);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    overflow: hidden;
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.results-table th {
+    background-color: rgba(74, 111, 165, 0.1);
+    color: var(--primary-color);
+    text-align: left;
+    padding: 8px 10px;
+    font-weight: 500;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.results-table td {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border-color); 
+}
+
+.results-table tr:last-child td {
+    border-bottom: none; 
+}
+
+.results-table tr:hover {
+    background-color: rgba(92, 184, 92, 0.05);
+}
+
+.product-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+    font-size: 13px;
+}
+
+.product-link:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+.bom-link {
+    display: inline-block;
+    padding: 3px 8px;
+    background-color: var(--secondary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 3px;
+    font-size: 12px;
+    transition: background-color 0.3s;
+}
+
+.bom-link:hover {
+    background-color: var(--secondary-dark);
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.pagination a, 
+.pagination span {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 28px;
+    height: 28px;
+    margin: 0 2px;
+    padding: 0 6px;
+    background-color: var(--card-background);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    text-decoration: none;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.pagination a:hover {
+    background-color: rgba(74, 111, 165, 0.1);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.pagination .active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    font-weight: 500;
+}
+
+.pagination-control {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.pagination .disabled {
+    color: var(--text-light);
+    background-color: var(--background-color);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.pagination-ellipsis {
+    border: none;
+    background: transparent;
+}
+
+/* BOM page specific styles */
+.bom-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    font-size: 13px;
+}
+
+.bom-table th {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: left;
+    padding: 8px 10px;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.bom-table td {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border-color); 
+}
+
+.bom-table tr:last-child td {
+    border-bottom: none; 
+}
+
+.bom-table tr:hover {
+    background-color: rgba(92, 184, 92, 0.1);
+}
+.level-ident-1 {
+    padding-left: 0px;
+}
+.level-ident-2 {
+    padding-left: 20px;
+}
+.level-ident-3 {
+    padding-left: 40px;
+}
+.level-ident-4 {
+    padding-left: 60px;
+}
+.level-ident-5 {
+    padding-left: 80px;
+}
+.level-1 {
+    background-color: rgba(74, 111, 165, 0.1);
+    font-weight: 500;
+}
+
+.level-2 {
+    background-color: rgba(74, 111, 165, 0.05);
+}
+
+.level-3 {
+    background-color: rgba(92, 184, 92, 0.05);
+}
+
+.level-4 {
+    background-color: rgba(92, 184, 92, 0.02);
+}
+
+.level-5 {
+    background-color: rgba(240, 173, 78, 0.05);
+}
+
+.level-indicator {
+    position: relative;
+    vertical-align: middle;
+}
+
+.level-marker {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.level-1 .level-marker {
+    background-color: var(--accent-color);
+}
+
+.level-2 .level-marker {
+    background-color: var(--primary-color);
+}
+
+.level-3 .level-marker {
+    background-color: var(--secondary-color);
+}
+
+.level-4 .level-marker {
+    background-color: var(--secondary-dark);
+}
+
+.level-5 .level-marker {
+    background-color: var(--primary-dark);
+}
+
+/* BOM Tabs */
+.bom-tabs {
+    display: flex;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tab-button {
+    padding: 6px 12px;
+    background-color: transparent;
+    color: var(--text-color);
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s;
+    margin-right: 8px;
+}
+
+.tab-button:hover {
+    background-color: rgba(74, 111, 165, 0.05);
+    color: var(--primary-color);
+}
+
+.tab-button.active {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    background-color: rgba(74, 111, 165, 0.1);
+}
+
+.tab-content {
+    display: block;
+}
+
+.tab-content.hidden {
+    display: none;
+}
+
+/* Update the boxed view styles for better inline display and indentation */
+.nested-bom-container {
+    padding: 15px 0;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.bom-box {
+    background-color: var(--card-background);
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-left: 3px solid var(--primary-color);
+    margin-bottom: 8px;
+    font-size: 12px;
+}
+
+.bom-box:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.bom-box.root-box {
+    margin-bottom: 15px;
+    border-left-width: 4px;
+}
+
+.bom-box.level-1 {
+    border-left-color: var(--primary-dark);
+}
+
+.bom-box.level-2 {
+    border-left-color: var(--primary-color);
+}
+
+.bom-box.level-3 {
+    border-left-color: var(--secondary-color);
+}
+
+.bom-box.level-4 {
+    border-left-color: var(--secondary-dark);
+}
+
+.bom-box.level-5 {
+    border-left-color: var(--accent-color);
+}
+
+.bom-box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 8px;
+    background-color: rgba(74, 111, 165, 0.05);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.bom-box-code {
+    font-weight: 500;
+    color: var(--primary-color);
+    font-size: 11px;
+}
+
+.bom-box-qty {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bom-box-name {
+    padding: 6px 8px 3px;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.bom-box-category,
+.bom-box-supplier {
+    padding: 0 8px 3px;
+    color: var(--text-light);
+    font-size: 11px;
+}
+
+.bom-box-actions {
+    padding: 3px 8px;
+    border-top: 1px solid var(--border-color);
+    text-align: right;
+}
+
+.bom-box-link {
+    display: inline-block;
+    padding: 2px 6px;
+    background-color: var(--secondary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 3px;
+    font-size: 10px;
+    transition: background-color 0.3s;
+}
+
+.bom-box-link:hover {
+    background-color: var(--secondary-dark);
+}
+
+.bom-children {
+    padding: 6px 6px 2px;
+    margin-top: 5px;
+    border-top: 1px dashed var(--border-color);
+    background-color: rgba(236, 240, 241, 0.3);
+}
+
+/* Increased indentation for nested boxes */
+.bom-box .bom-box {
+    margin-left: 25px;
+    margin-bottom: 6px;
+}
+
+.bom-box .bom-box .bom-box {
+    margin-left: 25px;
+}
+
+.bom-box .bom-box .bom-box .bom-box {
+    margin-left: 25px;
+}
+
+.bom-box .bom-box .bom-box .bom-box .bom-box {
+    margin-left: 25px;
+}
+
+/* Make the boxed view more compact horizontally */
+#boxed-view .bom-box {
+    max-width: calc(100% - 10px);
+}
+
+#boxed-view .root-box {
+    max-width: 100%;
+}
+
+/* Optional: Add connecting lines between parent and child boxes */
+.bom-children {
+    position: relative;
+}
+
+.bom-children:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10px;
+    height: 100%;
+    width: 1px;
+    background-color: var(--border-color);
+    z-index: 1;
+}
+
+.bom-box .bom-box:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -15px;
+    width: 15px;
+    height: 1px;
+    background-color: var(--border-color);
+}
+
+.bom-box {
+    position: relative;
+}
+
+/* Add these styles for the export button */
+.bom-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+}
+
+.export-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background-color: #217346; /* Excel green color */
+    color: white;
+    text-decoration: none;
+    border-radius: 3px;
+    font-size: 12px;
+    transition: background-color 0.3s;
+}
+
+.export-button:hover {
+    background-color: #1a5c38;
+}
+
+.export-button svg {
+    margin-right: 2px;
+}
+
+/* Update table cell alignment */
+td {
+    vertical-align: middle;
+}
+
+.results-table td,
+.bom-table td {
+    vertical-align: middle;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Ensure all table cells have consistent vertical alignment */
+table th,
+table td {
+    vertical-align: middle;
+}
+
+/* Specific alignment for level indicators */
+.level-indicator {
+    vertical-align: middle;
+}
+
+/* Align content in product details */
+.detail-value {
+    padding: 6px 8px;
+    background-color: rgba(92, 184, 92, 0.1);
+    border-radius: 3px;
+    border-left: 2px solid var(--secondary-color);
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+/* Ensure consistent alignment in boxed view */
+.bom-box-header,
+.bom-box-name,
+.bom-box-category,
+.bom-box-supplier,
+.bom-box-actions {
+    display: flex;
+    align-items: center;
+}
+
+.bom-box-header {
+    justify-content: space-between;
+}
+
+.bom-box-qty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+} 

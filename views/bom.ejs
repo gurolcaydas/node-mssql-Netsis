@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1><%= title %></h1>
+        
+        <%- include('partials/menu') %>
+        
+        <div class="search-form">
+            <form action="/BOM" method="GET">
+                <input type="text" name="productCode" placeholder="Enter Product Code" value="<%= typeof productCode !== 'undefined' ? productCode : '' %>">
+                <button type="submit">Go</button>
+            </form>
+        </div>
+        
+        <% if (typeof error !== 'undefined' && error) { %>
+            <p class="error"><%= error %></p>
+        <% } else if (typeof data !== 'undefined' && data.length === 0) { %>
+            <p class="message">No BOM data found for this product</p>
+        <% } else if (typeof data !== 'undefined' && data.length > 0) { %>
+            <div class="product-card">
+                <div class="product-header">
+                    <div class="product-title">Bill of Materials</div>
+                    <div class="product-code"><%= productCode %></div>
+                </div>
+                
+                <div class="bom-actions">
+                    <a href="/BOM/export?productCode=<%= productCode %>" class="export-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Export to Excel
+                    </a>
+                </div>
+                
+                <div class="bom-tabs">
+                    <button class="tab-button active" data-view="hierarchical">Hierarchical View</button>
+                    <button class="tab-button" data-view="flat">Flat View</button>
+                    <button class="tab-button" data-view="boxed">Boxed View</button>
+                </div>
+                
+                <div class="tab-content" id="hierarchical-view">
+                    <table class="bom-table">
+                        <thead>
+                            <tr>
+                                <th>Component Code</th>
+                                <th>Component Name</th>
+                                <th>Category</th>
+                                <th>Quantity</th>
+                                <th>Unit</th>
+                                <th>Supplier</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% data.forEach(item => { %>
+                                <tr class="level-<%= item.LeveL %>">
+                                    <td><span class="level-ident-<%= item.LeveL %>"><span class="level-marker"><%= item.LeveL %></span> <a href="/?productCode=<%= item.HAM_KODU %>" class="product-link"><%= item.HAM_KODU %></a></span></td>
+                                    <td><%= item.STOK_ADI || 'N/A' %></td>
+                                    <td><%= item.GRUP_ISIM || 'N/A' %></td>
+                                    <td><%= item.MIKTAR || 'N/A' %></td>
+                                    <td><%= item.OLCU_BR1 || 'N/A' %></td>
+                                    <td><%= item.Tedarikci || 'N/A' %></td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="tab-content hidden" id="flat-view">
+                    <table class="bom-table">
+                        <thead>
+                            <tr>
+                                <th>Component Code</th>
+                                <th>Component Name</th>
+                                <th>Category</th>
+                                <th>Total Quantity</th>
+                                <th>Unit</th>
+                                <th>Supplier</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% 
+                            // Create a flat list with aggregated quantities
+                            const flatList = {};
+                            data.forEach(item => {
+                                if (!flatList[item.HAM_KODU]) {
+                                    flatList[item.HAM_KODU] = {
+                                        HAM_KODU: item.HAM_KODU,
+                                        STOK_ADI: item.STOK_ADI,
+                                        GRUP_ISIM: item.GRUP_ISIM,
+                                        MIKTAR: parseFloat(item.MIKTAR) || 0,
+                                        OLCU_BR1: item.OLCU_BR1,
+                                        Tedarikci: item.Tedarikci
+                                    };
+                                } else {
+                                    flatList[item.HAM_KODU].MIKTAR += parseFloat(item.MIKTAR) || 0;
+                                }
+                            });
+                            
+                            Object.values(flatList).forEach(item => {
+                            %>
+                                <tr>
+                                    <td><a href="/?productCode=<%= item.HAM_KODU %>" class="product-link"><%= item.HAM_KODU %></a></td>
+                                    <td><%= item.STOK_ADI || 'N/A' %></td>
+                                    <td><%= item.GRUP_ISIM || 'N/A' %></td>
+                                    <td><%= item.MIKTAR.toFixed(2) %></td>
+                                    <td><%= item.OLCU_BR1 || 'N/A' %></td>
+                                    <td><%= item.Tedarikci || 'N/A' %></td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="tab-content hidden" id="boxed-view">
+                    <div class="nested-bom-container">
+                        <% 
+                        // Function to build a tree structure from flat data
+                        function buildTree(items) {
+                            const itemMap = {};
+                            const rootItems = [];
+                            
+                            // First pass: create a map of all items
+                            items.forEach(item => {
+                                const id = item.HAM_KODU + '-' + item.LeveL; // Unique ID
+                                itemMap[id] = {
+                                    ...item,
+                                    children: []
+                                };
+                            });
+                            
+                            // Second pass: build the tree
+                            items.forEach(item => {
+                                const id = item.HAM_KODU + '-' + item.LeveL;
+                                
+                                // Level 1 items are root items
+                                if (item.LeveL == 1) {
+                                    rootItems.push(itemMap[id]);
+                                } else {
+                                    // Find the parent item
+                                    // Parent is the closest item with a lower level
+                                    const parentLevel = item.LeveL - 1;
+                                    
+                                    // Find items that come before this one and have the parent level
+                                    const possibleParents = items.filter(p => 
+                                        p.LeveL == parentLevel && 
+                                        items.indexOf(p) < items.indexOf(item)
+                                    );
+                                    
+                                    if (possibleParents.length > 0) {
+                                        // Get the closest parent (last one in the filtered list)
+                                        const parent = possibleParents[possibleParents.length - 1];
+                                        const parentId = parent.HAM_KODU + '-' + parent.LeveL;
+                                        
+                                        // Add this item as a child of the parent
+                                        if (itemMap[parentId]) {
+                                            itemMap[parentId].children.push(itemMap[id]);
+                                        }
+                                    }
+                                }
+                            });
+                            
+                            return rootItems;
+                        }
+                        
+                        // Build the tree
+                        const treeData = buildTree(data);
+                        
+                        // Recursive function to render a component and its children
+                        function renderComponent(component, isRoot = false) {
+                        %>
+                            <div class="bom-box level-<%= component.LeveL %> <%= isRoot ? 'root-box' : '' %>">
+                                <div class="bom-box-header">
+                                    <div class="bom-box-code"><%= component.HAM_KODU %></div>
+                                    <div class="bom-box-qty"><%= component.MIKTAR %> <%= component.OLCU_BR1 %></div>
+                                </div>
+                                <div class="bom-box-name"><%= component.STOK_ADI || 'N/A' %></div>
+                                <div class="bom-box-category"><%= component.GRUP_ISIM || 'N/A' %></div>
+                                <div class="bom-box-supplier"><%= component.Tedarikci || 'N/A' %></div>
+                                <div class="bom-box-actions">
+                                    <a href="/?productCode=<%= component.HAM_KODU %>" class="bom-box-link">View</a>
+                                </div>
+                                
+                                <% if (component.children && component.children.length > 0) { %>
+                                    <div class="bom-children">
+                                        <% component.children.forEach(child => { %>
+                                            <% renderComponent(child) %>
+                                        <% }); %>
+                                    </div>
+                                <% } %>
+                            </div>
+                        <% } %>
+                        
+                        <% treeData.forEach(rootItem => { %>
+                            <% renderComponent(rootItem, true) %>
+                        <% }); %>
+                    </div>
+                </div>
+                
+                <div class="actions">
+                    <a href="/" class="action-button">Back to Product Search</a>
+                </div>
+            </div>
+        <% } %>
+    </div>
+    
+    <script>
+        // Tab switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Hide all tab contents
+                    tabContents.forEach(content => content.classList.add('hidden'));
+                    
+                    // Show the selected tab content
+                    const view = this.getAttribute('data-view');
+                    document.getElementById(view + '-view').classList.remove('hidden');
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1><%= title %></h1>
+        
+        <%- include('partials/menu') %>
+        
+        <div class="search-form">
+            <form action="/" method="GET">
+                <input type="text" name="productCode" placeholder="Enter Product Code" value="<%= typeof productCode !== 'undefined' ? productCode : '' %>">
+                <button type="submit">Go</button>
+            </form>
+        </div>
+        
+        <% if (typeof error !== 'undefined' && error) { %>
+            <p class="error"><%= error %></p>
+        <% } else if (typeof data !== 'undefined' && data.length === 0) { %>
+            <p class="message">No product found with this code</p>
+        <% } else if (typeof data !== 'undefined' && data.length > 0) { %>
+            <% const product = data[0]; %>
+            <div class="product-card">
+                <div class="product-header">
+                    <div class="product-title"><%= product.STOK_ADI %></div>
+                    <div class="product-code"><%= product.STOK_KODU %></div>
+                </div>
+                
+                <div class="product-details">
+                    <div class="detail-group">
+                        <div class="detail-label">Manufacturer Code</div>
+                        <div class="detail-value"><%= product.URETICI_KODU || 'N/A' %></div>
+                    </div>
+                    
+                    <div class="detail-group">
+                        <div class="detail-label">English Name</div>
+                        <div class="detail-value"><%= product.INGISIM || 'N/A' %></div>
+                    </div>
+                    
+                    <div class="detail-group">
+                        <div class="detail-label">Group Code</div>
+                        <div class="detail-value"><%= product.GRUP_KODU || 'N/A' %></div>
+                    </div>
+                    
+                    <div class="detail-group">
+                        <div class="detail-label">Storage Code</div>
+                        <div class="detail-value"><%= product.DEPO_KODU || 'N/A' %></div>
+                    </div>
+                    
+                    <div class="detail-group">
+                        <div class="detail-label">Unit</div>
+                        <div class="detail-value"><%= product.OLCU_BR1 || 'N/A' %></div>
+                    </div>
+                    
+                    <div class="detail-group">
+                        <div class="detail-label">Category 1</div>
+                        <div class="detail-value"><%= product.KOD1 || 'N/A' %></div>
+                    </div>
+                    
+                    <div class="detail-group">
+                        <div class="detail-label">Category 2</div>
+                        <div class="detail-value"><%= product.KOD2 || 'N/A' %></div>
+                    </div>
+                    
+                    <div class="detail-group">
+                        <div class="detail-label">Category 3</div>
+                        <div class="detail-value"><%= product.KOD3 || 'N/A' %></div>
+                    </div>
+                    
+                    <div class="detail-group">
+                        <div class="detail-label">Category 4</div>
+                        <div class="detail-value"><%= product.KOD4 || 'N/A' %></div>
+                    </div>
+                    
+                    <div class="detail-group">
+                        <div class="detail-label">Category 5</div>
+                        <div class="detail-value"><%= product.KOD5 || 'N/A' %></div>
+                    </div>
+                    
+                    <div class="detail-group">
+                        <div class="detail-label">Created Date</div>
+                        <div class="detail-value"><%= product.KAYITTARIHI ? new Date(product.KAYITTARIHI).toLocaleDateString() : 'N/A' %></div>
+                    </div>
+                    
+                    <div class="detail-group">
+                        <div class="detail-label">Created By</div>
+                        <div class="detail-value"><%= product.KAYITYAPANKUL || 'N/A' %></div>
+                    </div>
+                    
+                    <div class="detail-group">
+                        <div class="detail-label">Last Modified</div>
+                        <div class="detail-value"><%= product.DUZELTMETARIHI ? new Date(product.DUZELTMETARIHI).toLocaleDateString() : 'N/A' %></div>
+                    </div>
+                    
+                    <div class="detail-group">
+                        <div class="detail-label">Modified By</div>
+                        <div class="detail-value"><%= product.DUZELTMEYAPANKUL || 'N/A' %></div>
+                    </div>
+                </div>
+                
+                <div class="actions">
+                    <a href="/BOM?productCode=<%= product.STOK_KODU %>" class="action-button">View Bill of Materials</a>
+                </div>
+            </div>
+        <% } else { %>
+            <p class="message">Data is not properly defined</p>
+        <% } %>
+    </div>
+</body>
+</html>

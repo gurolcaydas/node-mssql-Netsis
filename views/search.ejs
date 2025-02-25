@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Search</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Product Search</h1>
+        
+        <%- include('partials/menu') %>
+        
+        <div class="search-form">
+            <form action="/search" method="GET">
+                <input type="text" name="query" placeholder="Enter Product Code or Name" value="<%= typeof query !== 'undefined' ? query : '' %>">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+        
+        <% if (typeof error !== 'undefined' && error) { %>
+            <p class="error"><%= error %></p>
+        <% } else if (typeof results !== 'undefined') { %>
+            <% if (results.length === 0) { %>
+                <p class="message">No products found matching your search criteria.</p>
+            <% } else { %>
+                <div class="results-container">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Product Code</th>
+                                <th>Product Name</th>
+                                <th>Category 1</th>
+                                <th>Category 2</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% results.forEach(product => { %>
+                                <tr>
+                                    <td><a href="/?productCode=<%= product.STOK_KODU %>" class="product-link"><%= product.STOK_KODU %></a></td>
+                                    <td><%= product.STOK_ADI %></td>
+                                    <td><%= product.KOD1 || 'N/A' %></td>
+                                    <td><%= product.KOD2 || 'N/A' %></td>
+                                    <td><a href="/BOM?productCode=<%= product.STOK_KODU %>" class="bom-link">View BOM</a></td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+                    <div class="pagination">
+                        <!-- First page and previous buttons -->
+                        <% if (currentPage > 1) { %>
+                            <a href="/search?query=<%= query %>&page=1" class="pagination-control">«</a>
+                            <a href="/search?query=<%= query %>&page=<%= currentPage - 1 %>" class="pagination-control">‹</a>
+                        <% } else { %>
+                            <span class="pagination-control disabled">«</span>
+                            <span class="pagination-control disabled">‹</span>
+                        <% } %>
+                        
+                        <!-- Page numbers -->
+                        <% 
+                        let startPage = Math.max(1, currentPage - 2);
+                        let endPage = Math.min(totalPages, startPage + 4);
+                        
+                        if (endPage - startPage < 4 && totalPages > 5) {
+                            startPage = Math.max(1, endPage - 4);
+                        }
+                        
+                        // Show first page if not in range
+                        if (startPage > 1) { %>
+                            <a href="/search?query=<%= query %>&page=1">1</a>
+                            <% if (startPage > 2) { %>
+                                <span class="pagination-ellipsis">...</span>
+                            <% } %>
+                        <% } %>
+                        
+                        <!-- Page numbers in range -->
+                        <% for(let i = startPage; i <= endPage; i++) { %>
+                            <a href="/search?query=<%= query %>&page=<%= i %>" class="<%= currentPage == i ? 'active' : '' %>"><%= i %></a>
+                        <% } %>
+                        
+                        <!-- Show last page if not in range -->
+                        <% if (endPage < totalPages) { %>
+                            <% if (endPage < totalPages - 1) { %>
+                                <span class="pagination-ellipsis">...</span>
+                            <% } %>
+                            <a href="/search?query=<%= query %>&page=<%= totalPages %>"><%= totalPages %></a>
+                        <% } %>
+                        
+                        <!-- Next and last page buttons -->
+                        <% if (currentPage < totalPages) { %>
+                            <a href="/search?query=<%= query %>&page=<%= currentPage + 1 %>" class="pagination-control">›</a>
+                            <a href="/search?query=<%= query %>&page=<%= totalPages %>" class="pagination-control">»</a>
+                        <% } else { %>
+                            <span class="pagination-control disabled">›</span>
+                            <span class="pagination-control disabled">»</span>
+                        <% } %>
+                    </div>
+                <% } %>
+            <% } %>
+        <% } %>
+    </div>
+</body>
+</html> 
